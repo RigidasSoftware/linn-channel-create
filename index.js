@@ -1,0 +1,1 @@
+exports.Adapter = require('./create');

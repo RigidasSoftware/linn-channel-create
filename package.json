@@ -1,0 +1,22 @@
+{
+  "name": "linn-channel-create",
+  "version": "1.0.0",
+  "description": "Linnworks Integration for Create.net",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://RigidasSoftware@github.com/RigidasSoftware/linn-channel-create.git"
+  },
+  "author": "Rigidas Software <https://www.rigidassoftware.co.uk>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RigidasSoftware/linn-channel-create/issues"
+  },
+  "homepage": "https://github.com/RigidasSoftware/linn-channel-create#readme",
+  "dependencies": {
+    "linn-channel-core": "^1.0.4"
+  }
+}
