@@ -1,19 +1,17 @@
-linnCore = require('linn-channel-core');
+var linnCore = require('linn-channel-core');
+var request = require("request");
 
-var Create = function() {
-    
-}
+var Create = function() { };
 
 Create.key = "CREATE";
-Create.devKey;
+Create.devkey;
 Create.options = {};
-
 
 Create.init = function(options){
     Create.options = options;
 
-    if(!options.devkey){
-        throw "devKey must be provided";
+    if(!options.devkey) {
+        throw "devkey must be provided";
     }
 
     Create.devkey = options.devkey;
@@ -31,22 +29,24 @@ Create.getOrders = function(body){
 
 Create.listProducts = function() {
     return new Promise(function(resolve, reject){
-        var request = require("request");
-
         var headers = {
             'X-Token': Create.devkey,
             'X-Version': 1
         };
 
-        request.get('https://api.create.net/products', { headers: headers }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+        request.get('https://api.create.net/products', 
+        { headers: headers }, 
+        function (error, response, body) {
+            if (error) {
+                return reject(error);
+            }
 
-                var parsedResult = new linnCore.ListProductsResult();;
+            if (response.statusCode === 200) {
+                var parsedResult = new linnCore.ListProductsResult();
 
                 var products = JSON.parse(body).products;
 
-                var productLength = products.length;
-                for(var i = 0; i < productLength; i++) {
+                for(var i = 0; i < products.length; i++) {
                     var product = products[i];
 
                     var newProduct = new linnCore.Product(
@@ -62,9 +62,6 @@ Create.listProducts = function() {
 
                 //Parse body here
                 resolve(parsedResult);
-            }
-            else if (!error) {
-                reject(JSON.parse(body));
             }
             else {
                 reject(error);
