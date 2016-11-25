@@ -1,5 +1,5 @@
-var linnCore = require('linn-channel-core');
-var request = require("request");
+var linnCore = require('linn-channel-core'),
+    request = require("request");
 
 var Create = function() { };
 
@@ -37,6 +37,7 @@ Create.listProducts = function() {
         request.get('https://api.create.net/products', 
         { headers: headers }, 
         function (error, response, body) {
+
             if (error) {
                 return reject(error);
             }
@@ -64,7 +65,7 @@ Create.listProducts = function() {
                 resolve(parsedResult);
             }
             else {
-                reject(error);
+                reject(JSON.parse(body));
             }
         });
     });
