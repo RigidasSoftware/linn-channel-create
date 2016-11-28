@@ -2,9 +2,10 @@
   "name": "linn-channel-create",
   "version": "1.0.2",
   "description": "Linnworks Integration for Create.net",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha "
+    
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,9 @@
   },
   "homepage": "https://github.com/RigidasSoftware/linn-channel-create#readme",
   "dependencies": {
+    "chai": "^3.5.0",
     "linn-channel-core": "^1.0.4",
+    "mocha": "^3.2.0",
     "request": "^2.79.0"
   }
 }
