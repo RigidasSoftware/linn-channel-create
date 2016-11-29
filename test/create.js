@@ -1,5 +1,11 @@
-var expect = require('chai').expect;
-var create = require('../lib/create.js');
+var chai = require('chai'),
+    expect = chai.expect,
+    should = chai.should(),
+    chaiAsPromised = require("chai-as-promised");
+    create = require('../lib/create.js'),
+    mock = require('./mock');
+
+chai.use(chaiAsPromised)
 
 //--debug-brk" add this to the test script to hit breakpoints
 
@@ -15,10 +21,6 @@ describe('create', function(){
             }
         });
 
-    })
-
-    describe('.init(options)', function() {
-
         it("should set the devkey", function() {
              create.init({ devkey: "123"});
 
@@ -26,106 +28,77 @@ describe('create', function(){
         });
 
     })
-})
+    
+    describe('.listProducts()', function(done) {
 
-var listProductMock = {
-  "products": [
-    {
-      "ID": 5482964,
-      "sku": "Loll1",
-      "categories": [
-        1282586
-      ],
-      "visible": true,
-      "title": "Lolly 1",
-      "short_description": "",
-      "long_description": "\r\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non diam odio. Suspendisse eget est et risus lobortis volutpat eu sit amet nibh. In in libero non mi bibendum ultricies id ac lectus. Sed in mauris semper, vestibulum magna sodales, consequat nisl. Maecenas erat nisi, tempus non justo convallis, molestie facilisis dui. Vestibulum a faucibus erat. Morbi ultrices vitae orci a euismod. Integer quis elit orci.</p>\r\n",
-      "price": 10,
-      "was_price": "0.00",
-      "trade_price": 5,
-      "weight": 15,
-      "stock_total": 11,
-      "stock_backorder": 0,
-      "title_tag": "",
-      "meta_keywords": "",
-      "meta_description": "",
-      "average_rating": "0",
-      "product_type_id": "0",
-      "downloadable": "0",
-      "options": [
-        {
-          "ID": 215423,
-          "title": "Lolly Sizes",
-          "required": "0",
-          "items": [
-            {
-              "ID": 1016324,
-              "title": "Large",
-              "price_adjustment": "0.00",
-              "weight_adjustment": "0.000",
-              "is_custom_input": false
-            },
-            {
-              "ID": 1016330,
-              "title": "Small",
-              "price_adjustment": "0.00",
-              "weight_adjustment": "0.000",
-              "is_custom_input": false
-            }
-          ]
-        }
-      ],
-      "free_postage": false
-    },
-    {
-      "ID": 5482967,
-      "sku": "",
-      "categories": [
-        1282586
-      ],
-      "visible": true,
-      "title": "Lolly 2",
-      "short_description": "",
-      "long_description": "\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non diam odio. Suspendisse eget est et risus lobortis volutpat eu sit amet nibh. In in libero non mi bibendum ultricies id ac lectus. Sed in mauris semper, vestibulum magna sodales, consequat nisl. Maecenas erat nisi, tempus non justo convallis, molestie facilisis dui. Vestibulum a faucibus erat. Morbi ultrices vitae orci a euismod. Integer quis elit orci.</p>\n",
-      "price": "0.00",
-      "was_price": "0.00",
-      "trade_price": null,
-      "weight": "0.000",
-      "stock_total": 15,
-      "stock_backorder": 0,
-      "title_tag": "",
-      "meta_keywords": "",
-      "meta_description": "",
-      "average_rating": "0",
-      "product_type_id": "0",
-      "downloadable": "0",
-      "options": [],
-      "free_postage": false
-    },
-    {
-      "ID": 5482970,
-      "sku": "",
-      "categories": [
-        1282586
-      ],
-      "visible": true,
-      "title": "Lolly 3",
-      "short_description": "",
-      "long_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non diam odio. Suspendisse eget est et risus lobortis volutpat eu sit amet nibh. In in libero non mi bibendum ultricies id ac lectus. Sed in mauris semper, vestibulum magna sodales, consequat nisl. Maecenas erat nisi, tempus non justo convallis, molestie facilisis dui. Vestibulum a faucibus erat. Morbi ultrices vitae orci a euismod. Integer quis elit orci.",
-      "price": "0.00",
-      "was_price": "0.00",
-      "trade_price": null,
-      "weight": "0.000",
-      "stock_total": 7,
-      "stock_backorder": 0,
-      "title_tag": "",
-      "meta_keywords": "",
-      "meta_description": "",
-      "average_rating": "0",
-      "product_type_id": null,
-      "downloadable": "0",
-      "options": [],
-      "free_postage": false
-    }
-  ]
-}
+        it("should get products", function() {
+
+             create.init({ devkey: "123", mockrequest: new mock.success()});
+
+             return create.listProducts().then(function(result) {
+
+                  expect(result).to.have.property('Products');
+                  expect(result.Products.length).to.equal(4);
+
+                  //Item with sku
+                  var product1 = result.Products[0];
+                  expect(product1.ID).to.equal(5482964);
+                  expect(product1.SKU).to.equal("Loll1");
+                  expect(product1.Title).to.equal("Lolly 1");
+                  expect(product1.RetailPrice).to.equal(10);
+                  expect(product1.StockLevel).to.equal(11);
+
+                  //Option with price adjustments
+                  var product2 = result.Products[1];
+                  expect(product2.ID).to.equal(1016324);
+                  expect(product2.SKU).to.equal(1016324);
+                  expect(product2.Title).to.equal("Loll1: Large Lolly Sizes");
+                  expect(product2.RetailPrice).to.equal(10.55);
+                  expect(product2.StockLevel).to.equal(-1);
+
+                  //Option with no price adjustments
+                  var product3 = result.Products[2];
+                  expect(product3.ID).to.equal(1016330);
+                  expect(product3.SKU).to.equal(1016330);
+                  expect(product3.Title).to.equal("Loll1: Small Lolly Sizes");
+                  expect(product3.RetailPrice).to.equal(10);
+                  expect(product3.StockLevel).to.equal(-1);
+
+                  //Product with no SKU
+                  var product4 = result.Products[3];
+                  expect(product4.ID).to.equal(5482967);
+                  expect(product4.SKU).to.equal(5482967);
+                  expect(product4.Title).to.equal("Lolly 2");
+                  expect(product4.RetailPrice).to.equal(7.57);
+                  expect(product4.StockLevel).to.equal(15);
+
+             }, function(error){
+                  done(error);
+             })
+        });
+
+        it("should error on getting products", function() {
+
+             create.init({ devkey: "123", mockrequest: new mock.error()});
+
+             return create.listProducts().then(function(result) {
+                done('should not hit here');
+             }, function(error){
+                expect(error).to.have.property('message');
+                expect(error.message).to.equal('it broke');
+             })
+        });
+
+        it("should fail to get products", function() {
+
+             create.init({ devkey: "123", mockrequest: new mock.notsuccessful()});
+
+             return create.listProducts().then(function(result) {
+                done('should not hit here');
+             }, function(error){
+                expect(error).to.have.property('message');
+                expect(error.message).to.equal('something happened');
+             })
+        });
+    })
+})
