@@ -34,4 +34,4 @@ _Incomplete_
 
 linn-channel-core expects the integration to have a listProducts() function, whose response is of type [ListProductResults](https://github.com/RigidasSoftware/linn-channel-core/blob/master/ListProductsResult.js), which itself is a collection of [Product](https://github.com/RigidasSoftware/linn-channel-core/blob/master/Product.js).
 
-An example of this can be seen [here](lib/create.js).
+An example of this can be seen [here](lib/create.js#L46).
