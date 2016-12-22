@@ -1,1 +1,1 @@
-# linn-channel-create
+# Linnworks Create Channel Integration
