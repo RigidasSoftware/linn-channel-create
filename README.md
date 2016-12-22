@@ -3,7 +3,7 @@ _This documentation is a work in progress_
 
 # Linnworks Create Channel Integration #
 
-This project serves as an example for writing a fully functional integration an eCommerce marketplace and [Linnworks.net](https://www.linnworks.net).
+This project serves as an example for writing a fully functional integration between an eCommerce marketplace and [Linnworks.net](https://www.linnworks.net).
 
 The sample marketplace being used in this project is the Create.net marketplace ([API Documentation](http://developers.create.net/API-Documentation)). The integration is fully functional and can therefore be considered a guideline.
 
