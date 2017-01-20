@@ -19,7 +19,7 @@
   "dependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "linn-channel-core": "^1.0.4",
+    "linn-channel-core": "^1.0.6",
     "mocha": "^3.2.0",
     "request": "^2.79.0"
   }
