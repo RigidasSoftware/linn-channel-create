@@ -2,7 +2,7 @@
 [![npm version](https://badge.fury.io/js/linn-channel-create.svg)](https://badge.fury.io/js/linn-channel-create)
 [![Build Status](https://travis-ci.org/RigidasSoftware/linn-channel-create.svg?branch=master)](https://travis-ci.org/RigidasSoftware/linn-channel-create)
 
-_This documentation is a work in progress_
+_This documentation is a work in progress_ 
 
 
 # Linnworks Create Channel Integration #
