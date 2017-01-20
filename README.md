@@ -1,3 +1,7 @@
+[![GitHub version](https://badge.fury.io/gh/RigidasSoftware%2Flinn-channel-create.svg)](https://badge.fury.io/gh/RigidasSoftware%2Flinn-channel-create)
+[![npm version](https://badge.fury.io/js/linn-channel-create.svg)](https://badge.fury.io/js/linn-channel-create)
+[![Build Status](https://travis-ci.org/RigidasSoftware/linn-channel-create.svg?branch=master)](https://travis-ci.org/RigidasSoftware/linn-channel-create)
+
 _This documentation is a work in progress_
 
 
