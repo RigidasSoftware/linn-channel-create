@@ -1,7 +1,8 @@
 var chai = require('chai'),
     expect = chai.expect,
-    config = require('../lib/config.js'),
-    linnCore = require('linn-channel-core');
+    Config = require('../lib/config.js'),
+    linnCore = require('linn-channel-core'),
+    dbAdapter = require('./dbMockAdapter');
 
 //--debug-brk" add this to the test script to hit breakpoints
 
@@ -14,7 +15,7 @@ describe('config', function(){
             var request = {
                 a: "b"
             };
-            
+            var config = new Config(new dbAdapter());
             config.addNewUser(request).then(function(result) {
                 done('should not hit here');
              }, function(error){
@@ -27,13 +28,15 @@ describe('config', function(){
 
             var request = new linnCore.AddNewUserRequest("provider", "", "lwguid", "email", "accountname");
             
+            var config = new Config(new dbAdapter());
             return config.addNewUser(request).then(function(result) {
 
                 if(!(result instanceof linnCore.AddNewUserResponse)){
-                    return done("request not of type AddNewUserRequest");
+                    return done("request not of type AddNewUserResponse");
                 }
 
-                expect(result.AuthorisationToken).to.equal("some token");
+                expect(result.AuthorizationToken.length).to.equal(32);
+                expect(result.Error).to.equal("");
 
              }, function(error){
                 done('should not hit here');
@@ -41,5 +44,13 @@ describe('config', function(){
 
         });
 
-    })
+    });
+
+    describe('.saveUserConfig(saveUserConfigRequest)', function() {
+
+        it("THIS IS NOT TESTED!", function() {
+            expect("").to.equal('This call is not tested as I don\'t know what to expect yet');
+        });
+    });
+
 });
