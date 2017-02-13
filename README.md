@@ -39,25 +39,3 @@ _Incomplete_
 linn-channel-core expects the integration to have a listProducts() function, whose response is of type [ListProductResults](https://github.com/RigidasSoftware/linn-channel-core/blob/master/ListProductsResult.js), which itself is a collection of [Product](https://github.com/RigidasSoftware/linn-channel-core/blob/master/Product.js).
 
 An example of this can be seen [here](lib/create.js#L46).
-
-### To Do
-- Use api token in requests
-- Config test
-	- https://api.create.net/products/_1*testproduct1_/stock
-	- Expected response: "No data found"
-- Update inventory levels
-	- http://developers.create.net/API-Documentation/resources/shop/products_and_categories/stock.html
-	- https://api.create.net/products/:product_id/stock/:stock_record_id
-- Update inventory prices
-	- No API
-- Get orders
-	- http://developers.create.net/API-Documentation/resources/shop/order_managment/orders.html
-	- http://developers.create.net/API-Documentation/resources/shop/order_managment/order_products.html
-- Despatch Order
-	- No API
-- Get shipping tags
-	- Custom list. No API
-- Get payment tags
-	- Static List. https://login.create.net/frameset.phtml
-	- Need to find out the keys used in order.gateway
-
