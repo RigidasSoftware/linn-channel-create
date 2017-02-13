@@ -39,3 +39,14 @@ _Incomplete_
 linn-channel-core expects the integration to have a listProducts() function, whose response is of type [ListProductResults](https://github.com/RigidasSoftware/linn-channel-core/blob/master/ListProductsResult.js), which itself is a collection of [Product](https://github.com/RigidasSoftware/linn-channel-core/blob/master/Product.js).
 
 An example of this can be seen [here](lib/create.js#L46).
+
+### To Do
+- Use api token in requests
+- Config test
+- Update inventory levels
+- Update inventory prices
+- Get orders
+- Despatch Order
+- Get shipping tags
+- Get payment tags
+
