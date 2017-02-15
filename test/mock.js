@@ -85,7 +85,7 @@ class success {
       this.body = null;
   }
 
-  get(method, callback) {
+  get(method, token, callback) {
       if(method.endsWith("products"))  {
           return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
       }

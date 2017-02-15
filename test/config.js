@@ -370,18 +370,20 @@ describe('config', function(){
 
          it("should succeed", function() {
 
-             var config = new Config(null, new mock.success());
+             var config = new Config(new dbAdapter(), new mock.success());
+             var request = new linnCore.BaseRequest('create', "user config");
              
-             return config.testConfig().then(function(result) {
+             return config.testConfig(request).then(function(result) {
                   expect(result).to.be.an.instanceof(linnCore.BaseResponse);
              });
          });
 
          it("should error on test", function() {
 
-             var config = new Config(null, new mock.error());
+             var config = new Config(new dbAdapter(), new mock.error());
+             var request = new linnCore.BaseRequest('create', "user config");
              
-             return config.testConfig().then(function(result) {
+             return config.testConfig(request).then(function(result) {
                   throw 'Should not hit here';
              }, 
              function(error){
@@ -392,9 +394,10 @@ describe('config', function(){
 
          it("should fail on test", function() {
 
-             var config = new Config(null, new mock.notsuccessful());
+             var config = new Config(new dbAdapter(), new mock.notsuccessful());
+             var request = new linnCore.BaseRequest('create', "user config");
              
-             return config.testConfig().then(function(result) {
+             return config.testConfig(request).then(function(result) {
                   throw 'Should not hit here';
              }, function(error){
                     expect(error).to.be.an.instanceof(linnCore.BaseResponse);

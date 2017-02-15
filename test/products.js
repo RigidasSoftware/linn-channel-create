@@ -3,6 +3,7 @@ var chai = require('chai'),
     Products = require('../lib/products'),
     api = require('../lib/api'),
     linnCore = require('linn-channel-core'),
+    dbAdapter = require('./dbMockAdapter'),
     mock = require('./mock');
 
 //--debug-brk" add this to the test script to hit breakpoints
@@ -13,9 +14,11 @@ describe('products', function(){
 
         it("should get products", function() {
 
-             var products = new Products(new mock.success());
+             var products = new Products(new dbAdapter(), new mock.success());
              
-             return products.listProducts().then(function(result) {
+             var request = new linnCore.ProductsRequest('create', 'user config', 1);
+
+             return products.listProducts(request).then(function(result) {
 
                   expect(result).to.be.an.instanceof(linnCore.ProductsResponse);
 
@@ -57,30 +60,34 @@ describe('products', function(){
                   expect(product4.Quantity).to.equal(15);
 
              }, function(error){
-                  done(error);
+                  throw error;
              })
         });
 
         it("should error on getting products", function() {
-            var products = new Products(new mock.error());
+            var products = new Products(new dbAdapter(), new mock.error());
+             
+             var request = new linnCore.ProductsRequest('create', 'user config', 1);
 
-            return products.listProducts().then(function(result) {
-                done('should not hit here');
+             return products.listProducts(request).then(function(result) {
+                throw 'should not hit here';
             }, function(error){
-                expect(error).to.have.property('message');
-                expect(error.message).to.equal('it broke');
+                expect(error).to.be.instanceof(linnCore.ProductsResponse);
+                expect(error.Error).to.equal('it broke');
             })
         });
 
         it("should fail to get products", function() {
 
-             var products = new Products(new mock.notsuccessful());
+             var products = new Products(new dbAdapter(), new mock.notsuccessful());
              
-             return products.listProducts().then(function(result) {
-                done('should not hit here');
+             var request = new linnCore.ProductsRequest('create', 'user config', 1);
+
+             return products.listProducts(request).then(function(result) {
+                throw 'should not hit here';
              }, function(error){
-                expect(error).to.have.property('message');
-                expect(error.message).to.equal('something happened');
+                expect(error).to.be.instanceof(linnCore.ProductsResponse);
+                expect(error.Error).to.equal('something happened');
              })
         });
     })
