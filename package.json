@@ -1,6 +1,6 @@
 {
   "name": "linn-channel-create",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Linnworks Integration for Create.net",
   "main": "lib/index.js",
   "scripts": {
