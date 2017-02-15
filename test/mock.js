@@ -85,9 +85,12 @@ class success {
       this.body = null;
   }
 
-  get(method, options, callback) {
+  get(method, callback) {
       if(method.endsWith("products"))  {
           return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
+      }
+      else if(method === "products/_1*testproduct1_/stock")  {
+          return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
       }
   }
 }
