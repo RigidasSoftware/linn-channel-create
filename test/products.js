@@ -14,7 +14,7 @@ describe('products', function(){
 
         it("should get products", function() {
 
-             var products = new Products(new dbAdapter(), new mock.success());
+             var products = new Products(new dbAdapter(), api.mock(new mock.success()));
              
              var request = new linnCore.ProductsRequest('create', 'user config', 1);
 
@@ -65,7 +65,7 @@ describe('products', function(){
         });
 
         it("should error on getting products", function() {
-            var products = new Products(new dbAdapter(), new mock.error());
+            var products = new Products(new dbAdapter(), api.mock(new mock.error()));
              
              var request = new linnCore.ProductsRequest('create', 'user config', 1);
 
@@ -79,7 +79,7 @@ describe('products', function(){
 
         it("should fail to get products", function() {
 
-             var products = new Products(new dbAdapter(), new mock.notsuccessful());
+             var products = new Products(new dbAdapter(), api.mock(new mock.notsuccessful()));
              
              var request = new linnCore.ProductsRequest('create', 'user config', 1);
 

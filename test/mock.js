@@ -78,19 +78,20 @@ var listProductMock = {
 class success {
   
   constructor(){
-      this.response = {
+      let response = {
           statusCode: 200,
       };
-      this.error = null;
-      this.body = null;
+      let error = null;
+      let body = null;
   }
 
   get(method, token, callback) {
+      var self = this;
       if(method.endsWith("products"))  {
-          return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
+          return callback(self.error, self.response, JSON.stringify(self.body || listProductMock));
       }
       else if(method === "products/_1*testproduct1_/stock")  {
-          return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
+          return callback(self.error, self.response, JSON.stringify({ error: "No data found"}));
       }
   }
 }
