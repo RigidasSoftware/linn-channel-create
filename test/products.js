@@ -7,7 +7,6 @@ var chai = require('chai'),
     mock = require('./mock');
 
 //--debug-brk" add this to the test script to hit breakpoints
-
 describe('products', function(){
 
     describe('.listProducts()', function(done) {
@@ -25,39 +24,47 @@ describe('products', function(){
                   expect(result.HasMorePages).to.equal(false);
 
                   expect(result).to.have.property('Products');
-                  expect(result.Products.length).to.equal(4);
+                  expect(result.Products.length).to.equal(6);
 
-                  //Item with sku
+                  //Item with SKU
                   var product1 = result.Products[0];
-                  expect(product1.Reference).to.equal(5482964);
-                  expect(product1.SKU).to.equal("Loll1");
-                  expect(product1.Title).to.equal("Lolly 1");
-                  expect(product1.Price).to.equal(10);
-                  expect(product1.Quantity).to.equal(11);
+                  expect(product1.Reference).to.equal(5482970);
+                  expect(product1.SKU).to.equal("Loll3");
+                  expect(product1.Title).to.equal("Lolly 3");
+                  expect(product1.Price).to.equal(3.20);
+                  expect(product1.Quantity).to.equal(27);
 
-                  //Option with price adjustments
+                  //Item with no sku
                   var product2 = result.Products[1];
-                  expect(product2.Reference).to.equal(1016324);
-                  expect(product2.SKU).to.equal(1016324);
-                  expect(product2.Title).to.equal("Loll1: Large Lolly Sizes");
-                  expect(product2.Price).to.equal(10.55);
-                  expect(product2.Quantity).to.equal(-1);
+                  expect(product2.Reference).to.equal(5482967);
+                  expect(product2.SKU).to.equal(5482967);
+                  expect(product2.Title).to.equal("Lolly 2");
+                  expect(product2.Price).to.equal(0);
+                  expect(product2.Quantity).to.equal(9);
+
+                  //Option with negative price adjustments
+                  var product3 = result.Products[2];
+                  expect(product3.Reference).to.equal("5482964_stock_id_953448");
+                  expect(product3.SKU).to.equal("Loll1_Small_Red");
+                  expect(product3.Title).to.equal("Loll1: Small Red");
+                  expect(product3.Price).to.equal(9.5);
+                  expect(product3.Quantity).to.equal(2);
 
                   //Option with no price adjustments
-                  var product3 = result.Products[2];
-                  expect(product3.Reference).to.equal(1016330);
-                  expect(product3.SKU).to.equal(1016330);
-                  expect(product3.Title).to.equal("Loll1: Small Lolly Sizes");
-                  expect(product3.Price).to.equal(10);
-                  expect(product3.Quantity).to.equal(-1);
-
-                  //Product with no SKU
                   var product4 = result.Products[3];
-                  expect(product4.Reference).to.equal(5482967);
-                  expect(product4.SKU).to.equal(5482967);
-                  expect(product4.Title).to.equal("Lolly 2");
-                  expect(product4.Price).to.equal(7.57);
-                  expect(product4.Quantity).to.equal(15);
+                  expect(product4.Reference).to.equal("5482964_stock_id_953449");
+                  expect(product4.SKU).to.equal("Loll1_Medium_Red");
+                  expect(product4.Title).to.equal("Loll1: Medium Red");
+                  expect(product4.Price).to.equal(10.00);
+                  expect(product4.Quantity).to.equal(4);
+
+                  //Option with positive price adjustments
+                  var product5 = result.Products[4];
+                  expect(product5.Reference).to.equal("5482964_stock_id_953444");
+                  expect(product5.SKU).to.equal("Loll1_Large_Green");
+                  expect(product5.Title).to.equal("Loll1: Large Green");
+                  expect(product5.Price).to.equal(10.65);
+                  expect(product5.Quantity).to.equal(5);
 
              }, function(error){
                   throw error;
@@ -91,5 +98,12 @@ describe('products', function(){
              })
         });
     })
+
+    describe('.updateProducts()', function(done) {
+
+        it("should update product", function() {
+            throw "updateProducts not tested";
+        });
+    });
 
 });

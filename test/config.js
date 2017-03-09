@@ -1,6 +1,7 @@
 var chai = require('chai'),
     expect = chai.expect,
     Config = require('../lib/config.js'),
+    api = require('../lib/api'),
     linnCore = require('linn-channel-core'),
     dbAdapter = require('./dbMockAdapter'),
     mock = require('./mock')
@@ -370,7 +371,7 @@ describe('config', function(){
 
          it("should succeed", function() {
 
-             var config = new Config(new dbAdapter(), new mock.success());
+             var config = new Config(new dbAdapter(), api.mock(new mock.success()));
              var request = new linnCore.BaseRequest('create', "user config");
              
              return config.testConfig(request).then(function(result) {
@@ -380,7 +381,7 @@ describe('config', function(){
 
          it("should error on test", function() {
 
-             var config = new Config(new dbAdapter(), new mock.error());
+             var config = new Config(new dbAdapter(), api.mock(new mock.error()));
              var request = new linnCore.BaseRequest('create', "user config");
              
              return config.testConfig(request).then(function(result) {
@@ -394,7 +395,7 @@ describe('config', function(){
 
          it("should fail on test", function() {
 
-             var config = new Config(new dbAdapter(), new mock.notsuccessful());
+             var config = new Config(new dbAdapter(), api.mock(new mock.notsuccessful()));
              var request = new linnCore.BaseRequest('create', "user config");
              
              return config.testConfig(request).then(function(result) {
