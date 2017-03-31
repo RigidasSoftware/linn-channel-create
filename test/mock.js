@@ -263,32 +263,32 @@ var stockProductMock = {
     }
 };
 
-var orderMock = {
-  "order": {
+var paidOrderMock = {
+  "orders": [ {
     "ID": 4695666,
     "customer_details": {
       "ID": "0",
-      "email": "zefuzzy@aim.com",
-      "first_name": "FuzzBean",
-      "last_name": "McCunticles",
-      "company": "",
-      "address1": "Place",
-      "address2": "",
-      "address3": "",
-      "city": "Other Place",
-      "county": "Hampshire",
-      "postcode": "PO9 1DF",
+      "email": "billing@aim.com",
+      "first_name": "Money",
+      "last_name": "Keeper",
+      "company": "Uptight Accountants PLC",
+      "address1": "Highrise 72",
+      "address2": "Banking Town",
+      "address3": "The Biggest Part",
+      "city": "Important People City",
+      "county": "Home of Monies",
+      "postcode": "PO7 4EJ",
       "country": "GB",
-      "phone": "01888774442"
+      "phone": "01888786442"
     },
     "shipping_details": {
-      "email": "zefuzzy@aim.com",
+      "email": "ship@aim.com",
       "first_name": "FuzzBean",
-      "last_name": "McCunticles",
-      "company": "",
+      "last_name": "Testington",
+      "company": "SellerYouStuff",
       "address1": "Place",
-      "address2": "",
-      "address3": "",
+      "address2": "SomePlace",
+      "address3": "In another place",
       "city": "Other Place",
       "county": "Hampshire",
       "postcode": "PO9 1DF",
@@ -301,7 +301,7 @@ var orderMock = {
     "order_total": "27.6",
     "order_currency": "GBP",
     "tax_total": "4.6",
-    "status": 1,
+    "status": 2,
     "sub_status": 1,
     "gateway": "manual payment",
     "gateway_transaction_id": null,
@@ -309,7 +309,7 @@ var orderMock = {
     "discount_amount": "0.00",
     "discount_text": "",
     "referrer": ""
-  }
+  }]
 };
 
 var orderProductMock = {
@@ -392,9 +392,19 @@ class success {
 
   get(method, token, callback) {
       if (method.indexOf('orders?status=') > -1) {
-          return callback(this.error, this.response, JSON.stringify(this.orderMock));
+          var body = this.body;
+          if(!this.body){
+            var status = method.substr(method.indexOf('orders?status=') + 14);
+            if(status == 2) {
+              body = paidOrderMock;
+            }
+            else {
+              body = { "error": "No data found" };
+            }
+          }
+          return callback(this.error, this.response, JSON.stringify(body));
       } else if (method.indexOf('orders') > -1 && method.indexOf('products') > -1) {
-          return callback(this.error, this.response, JSON.stringify(this.orderProductMock));
+          return callback(this.error, this.response, JSON.stringify(this.body || orderProductMock));
       } else if(method.endsWith("products/_1*testproduct1_/stock"))  {
           return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
       } else if(method.endsWith("products"))  {
