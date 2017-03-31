@@ -11,6 +11,9 @@ This project serves as an example for writing a fully functional integration bet
 
 The sample marketplace being used in this project is the Create.net marketplace ([API Documentation](http://developers.create.net/API-Documentation)). The integration is fully functional and can therefore be considered a guideline.
 
+The API is hosted here.
+https://channels.rigidassoftware.co.uk/
+
 ## Writing your own integration ##
 
 ### Pre-requisites ###
@@ -29,6 +32,8 @@ To be approved and hosted by us, an integration **must** allow the following fro
 While not necessary, it's highly desireable that the integration allows for: 
 
 * Updating the price of a given product/listing
+* Downloading a list of available payment methods
+* Downloading a list of available shipping methods
 
 ### Downloading Orders ###
 
@@ -36,6 +41,6 @@ _Incomplete_
 
 ### Downloading a list of products ###
 
-linn-channel-core expects the integration to have a listProducts() function, whose response is of type [ListProductResults](https://github.com/RigidasSoftware/linn-channel-core/blob/master/ListProductsResult.js), which itself is a collection of [Product](https://github.com/RigidasSoftware/linn-channel-core/blob/master/Product.js).
+linn-channel-core expects the integration to have a listProducts() function, whose response is of type [ProductsResponse](https://github.com/RigidasSoftware/linn-channel-core/blob/master/lib/Product.js#L18), which itself is a collection of [Product](https://github.com/RigidasSoftware/linn-channel-core/blob/master/lib/Product.js#L3).
 
 An example of this can be seen [here](lib/create.js#L46).
