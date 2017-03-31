@@ -46,7 +46,7 @@ describe('products', function(){
                   var product3 = result.Products[2];
                   expect(product3.Reference).to.equal("5482964_stock_id_953448");
                   expect(product3.SKU).to.equal("Loll1_Small_Red");
-                  expect(product3.Title).to.equal("Loll1: Small Red");
+                  expect(product3.Title).to.equal("Lolly 1: Small Red");
                   expect(product3.Price).to.equal(9.5);
                   expect(product3.Quantity).to.equal(2);
 
@@ -54,7 +54,7 @@ describe('products', function(){
                   var product4 = result.Products[3];
                   expect(product4.Reference).to.equal("5482964_stock_id_953449");
                   expect(product4.SKU).to.equal("Loll1_Medium_Red");
-                  expect(product4.Title).to.equal("Loll1: Medium Red");
+                  expect(product4.Title).to.equal("Lolly 1: Medium Red");
                   expect(product4.Price).to.equal(10.00);
                   expect(product4.Quantity).to.equal(4);
 
@@ -62,7 +62,7 @@ describe('products', function(){
                   var product5 = result.Products[4];
                   expect(product5.Reference).to.equal("5482964_stock_id_953444");
                   expect(product5.SKU).to.equal("Loll1_Large_Green");
-                  expect(product5.Title).to.equal("Loll1: Large Green");
+                  expect(product5.Title).to.equal("Lolly 1: Large Green");
                   expect(product5.Price).to.equal(10.65);
                   expect(product5.Quantity).to.equal(5);
 

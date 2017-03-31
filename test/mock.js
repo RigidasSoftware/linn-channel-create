@@ -263,6 +263,122 @@ var stockProductMock = {
     }
 };
 
+var orderMock = {
+  "order": {
+    "ID": 4695666,
+    "customer_details": {
+      "ID": "0",
+      "email": "zefuzzy@aim.com",
+      "first_name": "FuzzBean",
+      "last_name": "McCunticles",
+      "company": "",
+      "address1": "Place",
+      "address2": "",
+      "address3": "",
+      "city": "Other Place",
+      "county": "Hampshire",
+      "postcode": "PO9 1DF",
+      "country": "GB",
+      "phone": "01888774442"
+    },
+    "shipping_details": {
+      "email": "zefuzzy@aim.com",
+      "first_name": "FuzzBean",
+      "last_name": "McCunticles",
+      "company": "",
+      "address1": "Place",
+      "address2": "",
+      "address3": "",
+      "city": "Other Place",
+      "county": "Hampshire",
+      "postcode": "PO9 1DF",
+      "country": "GB",
+      "phone": "01888774442"
+    },
+    "shipping_method": "2nd Class Delivery",
+    "shipping_total": "3.5",
+    "date_purchased": "2017-03-31 22:27:45",
+    "order_total": "27.6",
+    "order_currency": "GBP",
+    "tax_total": "4.6",
+    "status": 1,
+    "sub_status": 1,
+    "gateway": "manual payment",
+    "gateway_transaction_id": null,
+    "notes": "Customer Notes: Yesmate",
+    "discount_amount": "0.00",
+    "discount_text": "",
+    "referrer": ""
+  }
+};
+
+var orderProductMock = {
+  "products": [
+    {
+      "ID": 12090286,
+      "order_id": 4695666,
+      "product_id": 5482970,
+      "name": "Lolly 3",
+      "options": [],
+      "stock_record_id": null,
+      "price": 5,
+      "qty": 1,
+      "unique_id": "",
+      "was_price": "0.00",
+      "trade_price": null
+    },
+    {
+      "ID": 12090282,
+      "order_id": 4695666,
+      "product_id": 5482967,
+      "name": "Lolly 2",
+      "options": [],
+      "stock_record_id": null,
+      "price": 5,
+      "qty": 1,
+      "unique_id": "",
+      "was_price": "0.00",
+      "trade_price": null
+    },
+    {
+      "ID": 12090278,
+      "order_id": 4695666,
+      "product_id": 5482964,
+      "name": "Lolly 1",
+      "options": [
+        {
+          "ID": 1668755,
+          "name": "Lolly Sizes",
+          "items": [
+            {
+              "ID": 9299780,
+              "title": "Small",
+              "custom_value": ""
+            }
+          ]
+        },
+        {
+          "ID": 1783744,
+          "name": "Colours",
+          "items": [
+            {
+              "ID": 10521988,
+              "title": "Red",
+              "custom_value": ""
+            }
+          ]
+        }
+      ],
+      "stock_record_id": 953448,
+      "price": "9.5",
+      "qty": 1,
+      "unique_id": "",
+      "was_price": "0.00",
+      "trade_price": 5
+    }
+  ]
+};
+
 class success {
   
   constructor(){
@@ -275,17 +391,18 @@ class success {
   }
 
   get(method, token, callback) {
-    
-      if(method.endsWith("products/_1*testproduct1_/stock"))  {
+      if (method.indexOf('orders?status=') > -1) {
+          return callback(this.error, this.response, JSON.stringify(this.orderMock));
+      } else if (method.indexOf('orders') > -1 && method.indexOf('products') > -1) {
+          return callback(this.error, this.response, JSON.stringify(this.orderProductMock));
+      } else if(method.endsWith("products/_1*testproduct1_/stock"))  {
           return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
-      }
-      else if(method.endsWith("products"))  {
+      } else if(method.endsWith("products"))  {
           return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
-      }
-      else if(method.endsWith("stock")){
+      } else if(method.endsWith("stock")){
           var productId = parseInt(method.replace('https://api.create.net/products/', '').replace('/stock',''));
           return callback(this.error, this.response, JSON.stringify(this.body || stockProductMock[productId]))
-      }
+      } 
   }
 }
 
