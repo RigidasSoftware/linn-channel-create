@@ -25,7 +25,7 @@ describe('orders', function(){
                   expect(result.HasMorePages).to.equal(false);
 
                   expect(result).to.have.property('Orders');
-                  expect(result.Orders.length).to.equal(1);
+                  expect(result.Orders.length).to.equal(2);
 
                   var order = result.Orders[0];
                   expect(order.ReferenceNumber).to.equal('4695666');
