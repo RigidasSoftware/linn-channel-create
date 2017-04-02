@@ -101,8 +101,227 @@ describe('products', function(){
 
     describe('.updateProducts()', function(done) {
 
-        it("should update product", function() {
-            throw "updateProducts not tested";
+        it("convert products correctly", function() {
+
+             class UpdateMock extends mock.success {
+                constructor(){
+                    super();
+                }
+
+                put(method, data, callback) {
+                    var params = method.substr(32);
+                    var parts = params.split('/');
+
+                    if(parts[1] != "stock") {
+                        throw "url part 1 should be 'stock'";
+                    }
+
+                    var product = data.form;
+                    var expectedStockId;
+                    var expectedStockLevel;
+                    switch(parts[0]) {
+                        case "1234":
+                            expectedStockId = 'p1234'
+                            expectedStockLevel = 7;
+                            break;
+                        case "1235":
+                            expectedStockId = '00123';
+                            expectedStockLevel = 13;
+                            break;
+                        default:
+                            throw "unexpected item";
+                            break;
+                    }
+
+                    if(parts[2] != expectedStockId) {
+                        throw "product id incorrect";
+                    }
+
+                    if(product.stock_total != expectedStockLevel){
+                        throw "stock_total not correct";
+                    }
+
+                    callback(this.error, this.response,  JSON.stringify({
+                        stock_record: {
+                            stock_total: product.stock_total
+                        }
+                    }));
+                }
+             };
+
+             var products = new Products(new dbAdapter(), api.mock(new UpdateMock()));
+             
+             var ps = [
+                new linnCore.ProductInventory("1234", "SKU1", 7),
+                new linnCore.ProductInventory("1235_stock_id_00123", "SKU2", 13)
+             ];
+
+             var request = new linnCore.ProductInventoryUpdateRequest('create', 'user config', ps);
+
+             return products.updateProducts(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.ProductInventoryUpdateResponse);
+                  expect(result.Products.length).to.equal(ps.length);
+
+                  for(var i = 0; i < result.Products.length; i++) {
+                      var product = result.Products[i];
+                      expect(product.Error).to.equal('');
+                  };
+
+                  expect(result.Products[0].SKU).to.equal('SKU1');
+                  expect(result.Products[1].SKU).to.equal('SKU2');
+
+             }, 
+             function(error){
+                 throw error;
+             });
+        });
+
+        it("handle incorrect level response", function() {
+
+             class UpdateMock extends mock.success {
+                constructor(){
+                    super();
+                }
+
+                put(method, data, callback) {
+                    callback(this.error, this.response,  JSON.stringify({
+                        stock_record: {
+                            stock_total: 5
+                        }
+                    }));
+                }
+             };
+
+             var products = new Products(new dbAdapter(), api.mock(new UpdateMock()));
+             
+             var ps = [
+                new linnCore.ProductInventory("1234", "SKU1", 7)
+             ];
+
+             var request = new linnCore.ProductInventoryUpdateRequest('create', 'user config', ps);
+
+             return products.updateProducts(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.ProductInventoryUpdateResponse);
+                  expect(result.Products.length).to.equal(1);
+
+                  expect(result.Products[0].SKU).to.equal('SKU1');
+                  expect(result.Products[0].Error).to.equal('stock level not updated correctly. Expecting: 7. Actual: 5');
+
+             }, 
+             function(error){
+                 throw error;
+             });
+        });
+
+        it("handle individual error", function() {
+
+             class UpdateMock extends mock.success {
+                constructor(){
+                    super();
+                    this.response.statusCode = 500;
+                }
+
+                put(method, data, callback) {
+                    callback(this.error, this.response,  JSON.stringify({
+                        error: "No data found"
+                    }));
+                }
+             };
+
+             var products = new Products(new dbAdapter(), api.mock(new UpdateMock()));
+             
+             var ps = [
+                new linnCore.ProductInventory("1234", "SKU1", 7)
+             ];
+
+             var request = new linnCore.ProductInventoryUpdateRequest('create', 'user config', ps);
+
+             return products.updateProducts(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.ProductInventoryUpdateResponse);
+                  expect(result.Products.length).to.equal(1);
+
+                  expect(result.Products[0].SKU).to.equal('SKU1');
+                  expect(result.Products[0].Error).to.equal('No data found');
+
+             }, 
+             function(error){
+                 throw error;
+             });
+        });
+
+        it("handle individual exception", function() {
+
+             class UpdateMock extends mock.success {
+                constructor(){
+                    super();
+                }
+
+                put(method, data, callback) {
+                    throw 'it broke';
+                }
+             };
+
+             var products = new Products(new dbAdapter(), api.mock(new UpdateMock()));
+             
+             var ps = [
+                new linnCore.ProductInventory("1234", "SKU1", 7)
+             ];
+
+             var request = new linnCore.ProductInventoryUpdateRequest('create', 'user config', ps);
+
+             return products.updateProducts(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.ProductInventoryUpdateResponse);
+                  expect(result.Products.length).to.equal(1);
+
+                  expect(result.Products[0].SKU).to.equal('SKU1');
+                  expect(result.Products[0].Error).to.equal('it broke');
+
+             }, 
+             function(error){
+                 throw error;
+             });
+        });
+
+        it("handle full exception", function() {
+
+             var products = new Products(new dbAdapter(), api.mock(new mock.error()));
+             
+             var ps = [
+                new linnCore.ProductInventory("1234", "SKU1", 7)
+             ];
+
+             var request = new linnCore.ProductInventoryUpdateRequest('create', 'throw', ps);
+
+             return products.updateProducts(request).then(function(result) {
+                  throw "should not hit here";
+             }, 
+             function(error){
+                 expect(error).to.be.an.instanceof(linnCore.ProductInventoryUpdateResponse);
+                 expect(error.Error).to.equal("it broke");
+             });
+        });
+
+        it("handle full rejection", function() {
+
+             var products = new Products(new dbAdapter(), api.mock(new mock.error()));
+             
+             var ps = [
+                new linnCore.ProductInventory("1234", "SKU1", 7)
+             ];
+
+             var request = new linnCore.ProductInventoryUpdateRequest('create', 'reject', ps);
+
+             return products.updateProducts(request).then(function(result) {
+                  throw "should not hit here";
+             }, 
+             function(error){
+                 expect(error).to.be.an.instanceof(linnCore.ProductInventoryUpdateResponse);
+                 expect(error.Error).to.equal("you got rejected");
+             });
         });
     });
 

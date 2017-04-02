@@ -41,6 +41,8 @@ function dbMockAdapter() {
                     );
                 case "throw":
                     throw 'it broke';
+                case "reject":
+                    return reject('you got rejected');
                 default:
                     return reject('unknown test');
             }

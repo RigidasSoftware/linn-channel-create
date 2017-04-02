@@ -87,8 +87,30 @@ describe('orders', function(){
         });
 
         it("should return an empty Orders object", function() {
-            //Test no data from orders and order products
-            throw "untested";
+            class UpdateMock extends mock.success {
+                constructor(){
+                    super();
+                }
+
+                get(method, data, callback) {
+                    callback(this.error, this.response, JSON.stringify({
+                        error: 'No data found'
+                    }))
+                }
+            };
+
+            var orders = new Orders(new dbAdapter(), api.mock(new UpdateMock()));
+             
+            var request = new linnCore.OrdersRequest('create', 'user config');
+
+            return orders.listOrders(request).then(function(result) {
+                expect(result).to.be.instanceof(linnCore.OrdersResponse);
+                expect(result.Orders.length).to.equal(0);
+                expect(result.Error).to.equal('');
+                expect(result.HasMorePages).to.equal(false);
+            }, function(error){
+                throw error;
+            })
         });
 
         it("should error on getting orders", function() {

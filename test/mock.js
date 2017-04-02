@@ -309,6 +309,52 @@ var paidOrderMock = {
     "discount_amount": "0.00",
     "discount_text": "",
     "referrer": ""
+  },
+  {
+    "ID": 4705218,
+    "customer_details": {
+      "ID": "0",
+      "email": "billing@aim.com",
+      "first_name": "Test",
+      "last_name": 1,
+      "company": "",
+      "address1": 1,
+      "address2": 1,
+      "address3": 1,
+      "city": 1,
+      "county": 1,
+      "postcode": 1,
+      "country": "GB",
+      "phone": 1
+    },
+    "shipping_details": {
+      "email": "ship@aim.com",
+      "first_name": "Test",
+      "last_name": 1,
+      "company": "",
+      "address1": 1,
+      "address2": 1,
+      "address3": 1,
+      "city": 1,
+      "county": 1,
+      "postcode": 1,
+      "country": "GB",
+      "phone": 1
+    },
+    "shipping_method": "1st Class Delivery",
+    "shipping_total": 6,
+    "date_purchased": "2017-04-02 22:42:07",
+    "order_total": "18.7",
+    "order_currency": "GBP",
+    "tax_total": "3.2",
+    "status": 1,
+    "sub_status": 1,
+    "gateway": "manual payment",
+    "gateway_transaction_id": null,
+    "notes": "",
+    "discount_amount": "0.50",
+    "discount_text": "Discount (Test Discount Fixed)",
+    "referrer": ""
   }]
 };
 
@@ -409,7 +455,8 @@ class success {
           return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
       } else if(method.endsWith("products"))  {
           return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
-      } else if(method.endsWith("stock")){
+      } 
+      else if(method.endsWith("stock")){
           var productId = parseInt(method.replace('https://api.create.net/products/', '').replace('/stock',''));
           return callback(this.error, this.response, JSON.stringify(this.body || stockProductMock[productId]))
       } 
@@ -428,7 +475,7 @@ class error extends success {
 class notsuccessful extends success {
   constructor(){
       super();
-      this.response.statusCode = 400;
+      this.response.statusCode = 500;
       this.body = {
         message: "something happened"
       }
