@@ -21,7 +21,7 @@ describe('products', function(){
 
                   expect(result).to.be.an.instanceof(linnCore.ProductsResponse);
 
-                  expect(result.HasMorePages).to.equal(false);
+                  expect(result.HasMorePages).to.equal(true);
 
                   expect(result).to.have.property('Products');
                   expect(result.Products.length).to.equal(6);
@@ -66,6 +66,26 @@ describe('products', function(){
                   expect(product5.Price).to.equal(10.65);
                   expect(product5.Quantity).to.equal(5);
 
+             }, function(error){
+                  throw error;
+             })
+        });
+
+        it("should handle end of pages", function() {
+
+             var products = new Products(new dbAdapter(), api.mock(new mock.success()));
+             
+             var request = new linnCore.ProductsRequest('create', 'user config', 100);
+
+             return products.listProducts(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.ProductsResponse);
+
+                  expect(result.HasMorePages).to.equal(false);
+
+                  expect(result).to.have.property('Products');
+                  expect(result.Products.length).to.equal(0);
+             
              }, function(error){
                   throw error;
              })

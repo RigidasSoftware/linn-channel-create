@@ -453,8 +453,13 @@ class success {
           return callback(this.error, this.response, JSON.stringify(this.body || orderProductMock));
       } else if(method.endsWith("products/_1*testproduct1_/stock"))  {
           return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
-      } else if(method.endsWith("products"))  {
-          return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
+      } else if(method.indexOf("products?page=") > -1)  {
+          if(method.endsWith("products?page=100")){
+              return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
+          }
+          else {
+              return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));
+          }
       } 
       else if(method.endsWith("stock")){
           var productId = parseInt(method.replace('https://api.create.net/products/', '').replace('/stock',''));
