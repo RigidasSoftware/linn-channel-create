@@ -425,6 +425,62 @@ var orderProductMock = {
   ]
 };
 
+var deliveryZonesMock = {
+  "delivery_zones": [
+    {
+      "ID": 439787,
+      "name": "Home Country",
+      "tax_enabled": true,
+      "prices_are_exclusive_of_tax": false,
+      "charge_tax_in_this_zone": false,
+      "tax_name": "Home Tax",
+      "tax_rate": 20,
+      "free_postage_above": "0.00"
+    },
+    {
+      "ID": 439784,
+      "name": "All Other Countries",
+      "tax_enabled": false,
+      "prices_are_exclusive_of_tax": false,
+      "charge_tax_in_this_zone": false,
+      "tax_name": "",
+      "tax_rate": 20,
+      "free_postage_above": "0.00"
+    }
+  ]
+}
+
+var deliveryTypesMock ={
+    439787: {
+      "delivery_types": [
+        {
+          "ID": 136469,
+          "name": "Click & Collect"
+        },
+        {
+          "ID": 136466,
+          "name": "2nd Class Delivery"
+        },
+        {
+          "ID": 136463,
+          "name": "1st Class Delivery"
+        }
+      ]
+    },
+    439784: {
+      "delivery_types": [
+        {
+          "ID": 136465,
+          "name": "1st Class Delivery"
+        },
+        {
+          "ID": 136472,
+          "name": "International Standard Delivery"
+        }
+      ]
+    }
+}
+
 class success {
   
   constructor(){
@@ -465,6 +521,13 @@ class success {
           var productId = parseInt(method.replace('https://api.create.net/products/', '').replace('/stock',''));
           return callback(this.error, this.response, JSON.stringify(this.body || stockProductMock[productId]))
       } 
+      else if(method.endsWith("deliveryzones")){
+          return callback(this.error, this.response, JSON.stringify(this.body || deliveryZonesMock))
+      }
+      else if(method.endsWith("types")){
+          var zoneId = parseInt(method.replace('https://api.create.net/deliveryzones/', '').replace('/types',''));
+          return callback(this.error, this.response, JSON.stringify(this.body || deliveryTypesMock[zoneId]))
+      }
   }
 }
 

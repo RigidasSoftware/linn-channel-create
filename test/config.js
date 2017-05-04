@@ -405,4 +405,61 @@ describe('config', function(){
              });
          });
     });
+
+    describe('.getShippingTags(request)', function() {
+
+         it("should succeed", function() {
+
+             var config = new Config(new dbAdapter(), api.mock(new mock.success()));
+             var request = new linnCore.BaseRequest('create', "user config");
+             
+             return config.getShippingTags(request).then(function(result) {
+                  expect(result).to.be.an.instanceof(linnCore.ShippingTagResponse);
+
+                  expect(result.ShippingTags.length).to.equal(4);
+
+                  var tag1 = result.ShippingTags[0];
+                  expect(tag1.Tag).to.equal("Click & Collect");
+                  expect(tag1.FriendlyName).to.equal("Click & Collect");
+
+                  var tag2 = result.ShippingTags[1];
+                  expect(tag2.Tag).to.equal("2nd Class Delivery");
+                  expect(tag2.FriendlyName).to.equal("2nd Class Delivery");
+
+                  var tag3 = result.ShippingTags[2];
+                  expect(tag3.Tag).to.equal("1st Class Delivery");
+                  expect(tag3.FriendlyName).to.equal("1st Class Delivery");
+
+                  var tag4 = result.ShippingTags[3];
+                  expect(tag4.Tag).to.equal("International Standard Delivery");
+                  expect(tag4.FriendlyName).to.equal("International Standard Delivery");
+             });
+         });
+
+         it("should error on test", function() {
+
+             var config = new Config(new dbAdapter(), api.mock(new mock.error()));
+             var request = new linnCore.BaseRequest('create', "user config");
+             
+             return config.getShippingTags(request).then(function(result) {
+                  throw 'Should not hit here';
+             }, 
+             function(error){
+                expect(error).to.be.an.instanceof(linnCore.ShippingTagResponse);
+                expect(error.Error.message).to.equal('it broke');
+             });
+         });
+
+         it("should fail on test", function() {
+
+             var config = new Config(new dbAdapter(), api.mock(new mock.notsuccessful()));
+             var request = new linnCore.BaseRequest('create', "user config");
+             
+             return config.getShippingTags(request).then(function(result) {
+                  throw 'Should not hit here';
+             }, function(error){
+                    expect(error).to.be.an.instanceof(linnCore.ShippingTagResponse);
+             });
+         });
+    });
 });
