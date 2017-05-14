@@ -150,7 +150,6 @@ describe('products', function(){
                             break;
                         default:
                             throw "unexpected item";
-                            break;
                     }
 
                     if(parts[2] != expectedStockId) {

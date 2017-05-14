@@ -264,7 +264,8 @@ var stockProductMock = {
 };
 
 var paidOrderMock = {
-  "orders": [ {
+  "orders": [ 
+  {
     "ID": 4695666,
     "customer_details": {
       "ID": "0",
@@ -368,7 +369,7 @@ var orderProductMock = {
       "options": [],
       "stock_record_id": null,
       "price": 5,
-      "qty": 1,
+      "qty": 2,
       "unique_id": "",
       "was_price": "0.00",
       "trade_price": null
@@ -493,6 +494,11 @@ class success {
   }
 
   get(method, token, callback) {
+
+      var noData = JSON.stringify({
+        error: "No data found"
+      });
+
       if (method.indexOf('orders?status=') > -1) {
           var body = this.body;
           if(!this.body){
@@ -506,12 +512,18 @@ class success {
           }
           return callback(this.error, this.response, JSON.stringify(body));
       } else if (method.indexOf('orders') > -1 && method.indexOf('products') > -1) {
-          return callback(this.error, this.response, JSON.stringify(this.body || orderProductMock));
+          var orderId = method.replace('https://api.create.net/orders/','').replace('/products', '')
+          if(orderId === '4695689'){
+            return callback(this.error, this.response, noData);
+          }
+          else {
+            return callback(this.error, this.response, JSON.stringify(this.body || orderProductMock));
+          }
       } else if(method.endsWith("products/_1*testproduct1_/stock"))  {
-          return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
+          return callback(this.error, this.response, noData);
       } else if(method.indexOf("products?page=") > -1)  {
           if(method.endsWith("products?page=100")){
-              return callback(this.error, this.response, JSON.stringify({ error: "No data found"}));
+              return callback(this.error, this.response, noData);
           }
           else {
               return callback(this.error, this.response, JSON.stringify(this.body || listProductMock));

@@ -8,12 +8,10 @@ var chai = require('chai'),
 
 chai.use(require('chai-datetime'));
 
-return;
-
 describe('orders', function(){
 
     describe('.listOrders()', function(done) {
-
+        return;
         it("should get orders", function() {
 
              var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
@@ -142,4 +140,168 @@ describe('orders', function(){
             })
         });
     })
+
+    describe('.despatchOrders()', function(done) {
+
+        //item missing
+        //shipping method not provided
+        //complete failure
+
+        it("should complain about no items", function() {
+
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, "1st Class Delivery")
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.OrderDespatchResponse);
+                  expect(result.Error).to.equal('');
+                  expect(result.Orders.length).to.equal(1);
+
+                  var order1 = result.Orders[0];
+                  expect(order1).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order1.ReferenceNumber).to.equal("4695666");
+                  expect(order1.Error).to.equal('Item count different. Cannot partially despatch order.');
+
+             }, function(error){
+                 throw "should not hit here";
+             });
+
+        })
+
+        it("should complain about different item count", function() {
+
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, "1st Class Delivery", null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 2)
+                 ])
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.OrderDespatchResponse);
+                  expect(result.Error).to.equal('');
+                  expect(result.Orders.length).to.equal(1);
+
+                  var order1 = result.Orders[0];
+                  expect(order1).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order1.ReferenceNumber).to.equal("4695666");
+                  expect(order1.Error).to.equal('Item count different. Cannot partially despatch order.');
+
+             });
+
+        })
+
+        it("should complain about item quantity being less", function() {
+
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, "1st Class Delivery", null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482967", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482964_stock_id_953448", 1)
+                 ])
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.OrderDespatchResponse);
+                  expect(result.Error).to.equal('');
+                  expect(result.Orders.length).to.equal(1);
+
+                  var order1 = result.Orders[0];
+                  expect(order1).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order1.ReferenceNumber).to.equal("4695666");
+                  expect(order1.Error).to.equal('Item 5482970 has 1 despatched quantity. Expecting 2. Cannot partially despatch order.');
+
+             });
+
+        })
+
+        it("should complain about invalid order", function() {
+
+             class DespatchMock extends mock.success {
+                constructor(){
+                    super();
+                }
+
+                put(method, data, callback) {
+                    var params = method.substr(32);
+                    var parts = params.split('/');
+
+                    var order = data.form;
+                    var expectedShippingMethod;
+                    switch(parts[0]) {
+                        case "95666":
+                            expectedShippingMethod = "1st Class Delivery";
+                            break;
+                        default:
+                            throw "unexpected order";
+                    }
+
+                    if(order.shipping_method != expectedShippingMethod){
+                        throw "shipping_method not correct";
+                    }
+
+                    if(order.shipping_method != expectedShippingMethod){
+                        throw "shipping_method not correct";
+                    }
+
+                    callback(this.error, this.response); //Need to see what a real response is
+                }
+             };
+
+             var orders = new Orders(new dbAdapter(), api.mock(new DespatchMock()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, "1st Class Delivery", null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 2),
+                     new linnCore.OrderDespatchItem("abc", "5482967", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482964_stock_id_953448", 1)
+                 ]),
+                 new linnCore.OrderDespatch("4695689", null, "1st Class Delivery")
+             ];
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.OrderDespatchResponse);
+                  expect(result.Error).to.equal('');
+                  expect(result.Orders.length).to.equal(2);
+
+                  var findOrder = function(ref){
+                      for(var i = 0; i < result.Orders.length; i++){
+                          var order = result.Orders[i];
+                          if(order.ReferenceNumber === ref){
+                              return order;
+                          }
+                      }
+                      return null;
+                  };
+
+                  var order1 = findOrder("4695666");
+                  expect(order1).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order1.Error).to.equal('');
+
+                  var order2 = findOrder("4695689");
+                  expect(order2).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order2.Error).to.equal('Order does not exist');
+
+             });
+
+        })
+    });
 });
