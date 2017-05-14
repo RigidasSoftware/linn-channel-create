@@ -11,7 +11,7 @@ chai.use(require('chai-datetime'));
 describe('orders', function(){
 
     describe('.listOrders()', function(done) {
-        return;
+
         it("should get orders", function() {
 
              var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
@@ -40,7 +40,6 @@ describe('orders', function(){
                   expect(order.PostalServiceCost).to.equal(3.5);
                   expect(order.TaxRate).to.equal(20);
                   expect(order.Discount).to.equal(0); 
-                  throw "Need to test discount properly";
                   
                   var da = order.DeliveryAddress;
                   expect(da.FullName).to.equal('FuzzBean Testington');
@@ -79,7 +78,7 @@ describe('orders', function(){
                   expect(note.IsInternal).to.equal(false);
 
                   //test order items here
-                  throw "need to test items"
+                  throw "need to test items and discount"
 
              }, function(error){
                   throw error;
@@ -142,10 +141,6 @@ describe('orders', function(){
     })
 
     describe('.despatchOrders()', function(done) {
-
-        //item missing
-        //shipping method not provided
-        //complete failure
 
         it("should complain about no items", function() {
 
@@ -230,6 +225,35 @@ describe('orders', function(){
 
         })
 
+        it("should complain about item missing", function() {
+
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, "1st Class Delivery", null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 2),
+                     new linnCore.OrderDespatchItem("abc", "5482967", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482964_stock_id_953447", 1)
+                 ])
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.OrderDespatchResponse);
+                  expect(result.Error).to.equal('');
+                  expect(result.Orders.length).to.equal(1);
+
+                  var order1 = result.Orders[0];
+                  expect(order1).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order1.ReferenceNumber).to.equal("4695666");
+                  expect(order1.Error).to.equal('Item 5482964 missing. Cannot partially despatch order.');
+
+             });
+
+        })
+
         it("should complain about invalid order", function() {
 
              class DespatchMock extends mock.success {
@@ -249,10 +273,6 @@ describe('orders', function(){
                             break;
                         default:
                             throw "unexpected order";
-                    }
-
-                    if(order.shipping_method != expectedShippingMethod){
-                        throw "shipping_method not correct";
                     }
 
                     if(order.shipping_method != expectedShippingMethod){
@@ -301,6 +321,97 @@ describe('orders', function(){
                   expect(order2.Error).to.equal('Order does not exist');
 
              });
+
+        })
+
+        it("should complain about shipping method missing", function() {
+
+            class DespatchMock extends mock.success {
+                constructor(){
+                    super();
+                }
+
+                put(method, data, callback) {
+                    var order = data.form;
+
+                    if(order.shipping_method){
+                        throw "shipping_method should not be provided";
+                    }
+
+                    callback(this.error, this.response);
+                }
+             };
+
+             var orders = new Orders(new dbAdapter(), api.mock(new DespatchMock()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, null, null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 2),
+                     new linnCore.OrderDespatchItem("abc", "5482967", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482964_stock_id_953448", 1)
+                 ])
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+
+                  expect(result).to.be.an.instanceof(linnCore.OrderDespatchResponse);
+                  expect(result.Error).to.equal('');
+                  expect(result.Orders.length).to.equal(1);
+
+                  var order1 = result.Orders[0];
+                  expect(order1).to.be.instanceOf(linnCore.OrderDespatchError);
+                  expect(order1.ReferenceNumber).to.equal("4695666");
+                  expect(order1.Error).to.equal('');
+
+             });
+
+        })
+
+        it("should error on getting products", function() {
+
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.error()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, null, null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 2),
+                     new linnCore.OrderDespatchItem("abc", "5482967", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482964_stock_id_953448", 1)
+                 ])
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+                    throw 'should not hit here';
+             }, function(error){
+                    expect(error).to.be.instanceof(linnCore.OrderDespatchResponse);
+                    expect(error.Error).to.equal('it broke');
+             })
+
+        })
+
+        it("should fail to get products", function() {
+
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.notsuccessful()));
+             
+             var despatchOrders = [
+                 new linnCore.OrderDespatch("4695666", null, null, null, null, null, [
+                     new linnCore.OrderDespatchItem("abc", "5482970", 2),
+                     new linnCore.OrderDespatchItem("abc", "5482967", 1),
+                     new linnCore.OrderDespatchItem("abc", "5482964_stock_id_953448", 1)
+                 ])
+             ]
+
+             var request = new linnCore.OrderDespatchRequest('create', 'user config', despatchOrders);
+
+             return orders.despatchOrders(request).then(function(result) {
+                    throw 'should not hit here';
+             }, function(error){
+                    expect(error).to.be.instanceof(linnCore.OrderDespatchResponse);
+                    expect(error.Error).to.equal('something happened');
+             })
 
         })
     });
