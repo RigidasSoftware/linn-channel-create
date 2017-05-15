@@ -39,7 +39,7 @@ describe('orders', function(){
 
                   expect(order.PostalServiceCost).to.equal(3.5);
                   expect(order.TaxRate).to.equal(20);
-                  expect(order.Discount).to.equal(0); 
+                  expect(order.InternalDiscount).to.equal(4.4); 
                   
                   var da = order.DeliveryAddress;
                   expect(da.FullName).to.equal('FuzzBean Testington');
@@ -69,7 +69,7 @@ describe('orders', function(){
                   expect(ba.PhoneNumber).to.equal('01888786442');
                   expect(ba.EmailAddress).to.equal('billing@aim.com');
 
-                  expect(order.Notes.length).to.equal(1);
+                  expect(order.Notes.length).to.equal(2);
                   var note = order.Notes[0];
                   expect(note.Note).to.equal('Yesmate');
                   expect(note.NoteUserName).to.equal('Sync');
@@ -78,13 +78,50 @@ describe('orders', function(){
                   expect(note.IsInternal).to.equal(false);
 
                   //test order items here
-                  throw "need to test items and discount"
+                  var item1 = order.OrderItems[0];
+                  expect(item1.ItemTitle).to.equal('Lolly 3');
+                  expect(item1.IsService).to.equal(false);
+                  expect(item1.Options.length).to.equal(0);
+                  expect(item1.LinePercentDiscount).to.equal(0);
+                  expect(item1.OrderLineNumber).to.equal("5482970");
+                  expect(item1.PricePerUnit).to.equal(4.9);
+                  expect(item1.Qty).to.equal(2);
+                  expect(item1.SKU).to.equal("5482970");
+                  expect(item1.TaxCostInclusive).to.equal(true);
+                  expect(item1.TaxRate).to.equal(20);
+                  expect(item1.UseChannelTax).to.equal(true);
+
+                  var item2 = order.OrderItems[1];
+                  expect(item2.ItemTitle).to.equal('Lolly 2');
+                  expect(item2.IsService).to.equal(false);
+                  expect(item2.Options.length).to.equal(0);
+                  expect(item2.LinePercentDiscount).to.equal(0);
+                  expect(item2.OrderLineNumber).to.equal("5482967");
+                  expect(item2.PricePerUnit).to.equal(4.9);
+                  expect(item2.Qty).to.equal(1);
+                  expect(item2.SKU).to.equal("5482967");
+                  expect(item2.TaxCostInclusive).to.equal(true);
+                  expect(item2.TaxRate).to.equal(20);
+                  expect(item2.UseChannelTax).to.equal(true);
+
+                  var item3 = order.OrderItems[2];
+                  expect(item3.ItemTitle).to.equal('Lolly 1: Small Red');
+                  expect(item3.IsService).to.equal(false);
+                  expect(item3.Options.length).to.equal(0);
+                  expect(item3.LinePercentDiscount).to.equal(0);
+                  expect(item3.OrderLineNumber).to.equal("5482964_stock_id_953448");
+                  expect(item3.PricePerUnit).to.equal(10.3);
+                  expect(item3.Qty).to.equal(1);
+                  expect(item3.SKU).to.equal("5482964_stock_id_953448");
+                  expect(item3.TaxCostInclusive).to.equal(true);
+                  expect(item3.TaxRate).to.equal(20);
+                  expect(item3.UseChannelTax).to.equal(true);
 
              }, function(error){
                   throw error;
              })
         });
-
+        
         it("should return an empty Orders object", function() {
             class UpdateMock extends mock.success {
                 constructor(){
