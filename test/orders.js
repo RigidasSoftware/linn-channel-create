@@ -33,6 +33,7 @@ describe('orders', function(){
                   expect(order.Site).to.equal('');
                   expect(order.Currency).to.equal('GBP');
                   expect(order.ReceivedDate).to.equalDate(new Date('2017-03-31 22:27:45'));
+                  expect(order.PaidOn).to.equalDate(new Date('2017-03-31 22:27:45'));
 
                   expect(order.MatchPaymentMethodTag).to.equal('manual payment');
                   expect(order.MatchPostalServiceTag).to.equal('2nd Class Delivery');
