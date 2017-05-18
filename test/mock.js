@@ -511,7 +511,8 @@ class success {
             }
           }
           return callback(this.error, this.response, JSON.stringify(body));
-      } else if (method.indexOf('orders') > -1 && method.indexOf('products') > -1) {
+      } 
+      else if (method.indexOf('orders') > -1 && method.indexOf('products') > -1) {
           var orderId = method.replace('https://api.create.net/orders/','').replace('/products', '')
           if(orderId === '4695689'){
             return callback(this.error, this.response, noData);
@@ -519,9 +520,11 @@ class success {
           else {
             return callback(this.error, this.response, JSON.stringify(this.body || orderProductMock));
           }
-      } else if(method.endsWith("products/_1*testproduct1_/stock"))  {
+      } 
+      else if(method.endsWith("products/_1*testproduct1_/stock"))  {
           return callback(this.error, this.response, noData);
-      } else if(method.indexOf("products?page=") > -1)  {
+      } 
+      else if(method.indexOf("products?page=") > -1)  {
           if(method.endsWith("products?page=100")){
               return callback(this.error, this.response, noData);
           }
@@ -533,6 +536,19 @@ class success {
           var productId = parseInt(method.replace('https://api.create.net/products/', '').replace('/stock',''));
           return callback(this.error, this.response, JSON.stringify(this.body || stockProductMock[productId]))
       } 
+      else if(method.indexOf('/products/') > -1){
+          var productId = parseInt(method.replace('https://api.create.net/products/', ''));
+          for(var i = 0; i < listProductMock.products.length; i++){
+              var product = listProductMock.products[i];
+              if(product.ID === productId){
+                var res = {
+                    product: product
+                };
+                return callback(this.error, this.response, JSON.stringify(res))
+              }
+          }
+          return callback(this.error, this.response, noData)
+      }
       else if(method.endsWith("deliveryzones")){
           return callback(this.error, this.response, JSON.stringify(this.body || deliveryZonesMock))
       }

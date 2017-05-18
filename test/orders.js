@@ -1,5 +1,6 @@
 var chai = require('chai'),
     expect = chai.expect,
+    Products = require('../lib/products'),
     Orders = require('../lib/orders'),
     api = require('../lib/api'),
     linnCore = require('linn-channel-core'),
@@ -12,9 +13,11 @@ describe('orders', function(){
 
     describe('.listOrders()', function(done) {
 
+        var products = new Products(new dbAdapter(), api.mock(new mock.success()));
+
         it("should get orders", function() {
 
-             var orders = new Orders(new dbAdapter(), api.mock(new mock.success()));
+             var orders = new Orders(new dbAdapter(), api.mock(new mock.success()), products);
              
              var request = new linnCore.OrdersRequest('create', 'user config');
 
@@ -38,7 +41,7 @@ describe('orders', function(){
                   expect(order.MatchPaymentMethodTag).to.equal('manual payment');
                   expect(order.MatchPostalServiceTag).to.equal('2nd Class Delivery');
 
-                  expect(order.PostalServiceCost).to.equal(3.5);
+                  expect(order.PostalServiceCost).to.equal(4.2);
                   expect(order.TaxRate).to.equal(20);
                   expect(order.InternalDiscount).to.equal(4.4); 
                   
@@ -113,7 +116,7 @@ describe('orders', function(){
                   expect(item3.OrderLineNumber).to.equal("5482964_stock_id_953448");
                   expect(item3.PricePerUnit).to.equal(10.3);
                   expect(item3.Qty).to.equal(1);
-                  expect(item3.SKU).to.equal("5482964_stock_id_953448");
+                  expect(item3.SKU).to.equal("Loll1_Small_Red");
                   expect(item3.TaxCostInclusive).to.equal(true);
                   expect(item3.TaxRate).to.equal(20);
                   expect(item3.UseChannelTax).to.equal(true);
