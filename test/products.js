@@ -37,7 +37,7 @@ describe('products', function(){
                   //Item with no sku
                   var product2 = result.Products[1];
                   expect(product2.Reference).to.equal(5482967);
-                  expect(product2.SKU).to.equal(5482967);
+                  expect(product2.SKU).to.equal('5482967');
                   expect(product2.Title).to.equal("Lolly 2");
                   expect(product2.Price).to.equal(0);
                   expect(product2.Quantity).to.equal(9);

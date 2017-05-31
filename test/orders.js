@@ -90,7 +90,7 @@ describe('orders', function(){
                   expect(item1.OrderLineNumber).to.equal("5482970");
                   expect(item1.PricePerUnit).to.equal(4.9);
                   expect(item1.Qty).to.equal(2);
-                  expect(item1.SKU).to.equal("5482970");
+                  expect(item1.SKU).to.equal("Loll3");
                   expect(item1.TaxCostInclusive).to.equal(true);
                   expect(item1.TaxRate).to.equal(20);
                   expect(item1.UseChannelTax).to.equal(true);
