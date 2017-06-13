@@ -462,4 +462,30 @@ describe('config', function(){
              });
          });
     });
+
+    describe('.getPaymentTags()', function() {
+
+         it("should succeed", function() {
+
+            var config = new Config(new dbAdapter(), api.mock(new mock.success()));
+            
+            var result = config.getPaymentTags()
+            expect(result).to.be.an.instanceof(linnCore.PaymentTagResponse);
+
+            expect(result.PaymentTags.length).to.equal(3);
+
+            var tag1 = result.PaymentTags[0];
+            expect(tag1.Tag).to.equal("manual payment");
+            expect(tag1.FriendlyName).to.equal("Manual Payment");
+
+            var tag2 = result.PaymentTags[1];
+            expect(tag2.Tag).to.equal("paypal");
+            expect(tag2.FriendlyName).to.equal("PayPal");
+
+            var tag3 = result.PaymentTags[2];
+            expect(tag3.Tag).to.equal("sagepay");
+            expect(tag3.FriendlyName).to.equal("Sage Pay");
+            
+        });
+    });
 });
